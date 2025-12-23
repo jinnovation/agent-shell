@@ -3968,8 +3968,7 @@ Mark model using CURRENT-MODEL-ID."
     ("C" "Interrupt" agent-shell-interrupt :transient t)]
    ["Shell"
     ("b" "Toggle" agent-shell-toggle :transient t)
-    ("N" "New shell" (lambda ()
-                       (interactive) (agent-shell t)))]])
+    ("N" "New shell" agent-shell-new-shell)]])
 
 ;;; Transcript
 
