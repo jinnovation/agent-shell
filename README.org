@@ -222,6 +222,28 @@ You can load environment variables from .env files using the `:load-env` paramet
 
 The .env files should contain variables in the format `KEY=value`, with one variable per line. Comments (lines starting with `#`) and empty lines are ignored.
 
+**** Loading project-specific environment variables using =[[https://direnv.net/][direnv]]=
+
+To ensure that project-specific environment variables from [[https://direnv.net/][direnv]] are accessible to the agent, you
+have two options depending on which direnv integration package you use.
+
+If you use [[https://github.com/purcell/envrc][envrc.el]], no action is needed -- the environment variables are accessible to the agent
+automatically. This is due to the package dynamically setting the `process-environment` variable
+buffer-locally -- including in the =agent-shell= buffer.
+
+If you use [[https://github.com/wbolster/emacs-direnv][direnv.el]], you'll need to define a wrapper command around `agent-shell` that re-populates
+the corresponding =agent-shell-*= variable(s) with what =direnv.el= loaded, right before invoking
+=agent-shell=. Something like the following:
+
+#+begin_src emacs-lisp
+  (defun my/agent-shell-with-deferred-env ()
+    "Invokes `agent-shell' with deferred environment variables."
+    (interactive)
+    (let ((agent-shell-anthropic-claude-environment (agent-shell-make-environment-variables
+                                                     :inherit-env t)))
+      (agent-shell)))
+#+end_src
+
 *** Anthropic Claude
 
 For login-based authentication (default):
